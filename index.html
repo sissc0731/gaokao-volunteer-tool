@@ -32,7 +32,7 @@ function doRec(){
     else if(diff<15){prob=Math.round(60+Math.random()*20);level='wd';}
     else if(diff<30){prob=Math.round(80+Math.random()*15);level='bd';}
     else{prob=Math.round(92+Math.random()*7);level='bd';}
-    results.push({n:s.n,c:s.c,sc:schoolScore,diff:diff,prob:prob,level:level,i9:s.i9,i2:s.i2,sy:s.sy,en:s.en[subj]||0});
+    results.push({n:s.n,c:s.c,sc:schoolScore,diff:diff,prob:prob,level:level,i9:s.i985,i2:s.i211,sy:s.syl,en:s.enrl[subj]||0});
   });
   results.sort(function(a,b){return b.sc-a.sc});
   var cw=results.filter(function(r){return r.level==='cw'});
@@ -48,9 +48,9 @@ function doRec(){
     h+='<p style="font-size:.8rem;font-weight:600;margin:10px 0 4px">'+title+' ('+arr.length+'所)</p>';
     arr.forEach(function(s){
       var tags='';
-      if(s.i9)tags+='<span style="background:#fef3c7;color:#92400e;font-size:.55rem;padding:1px 3px;border-radius:3px;margin:0 1px">985</span>';
-      if(s.i2)tags+='<span style="background:#dbeafe;color:#1e40af;font-size:.55rem;padding:1px 3px;border-radius:3px;margin:0 1px">211</span>';
-      if(s.sy)tags+='<span style="background:#d1fae5;color:#065f46;font-size:.55rem;padding:1px 3px;border-radius:3px;margin:0 1px">双一流</span>';
+      if(s.i985)tags+='<span style="background:#fef3c7;color:#92400e;font-size:.55rem;padding:1px 3px;border-radius:3px;margin:0 1px">985</span>';
+      if(s.i211)tags+='<span style="background:#dbeafe;color:#1e40af;font-size:.55rem;padding:1px 3px;border-radius:3px;margin:0 1px">211</span>';
+      if(s.syl)tags+='<span style="background:#d1fae5;color:#065f46;font-size:.55rem;padding:1px 3px;border-radius:3px;margin:0 1px">双一流</span>';
       var estRank=Math.round(Math.exp((720-s.sc)/80)*10000);
       var rankStr=estRank>10000?(estRank/10000).toFixed(1)+'万':estRank.toLocaleString();
       var sm=[];
@@ -84,7 +84,7 @@ function doList(){
     var tags='';
     if(sc.i9)tags+='<span style="background:#fef3c7;color:#92400e;font-size:.55rem;padding:1px 3px;border-radius:3px;margin:0 1px">985</span>';
     if(sc.i2)tags+='<span style="background:#dbeafe;color:#1e40af;font-size:.55rem;padding:1px 3px;border-radius:3px;margin:0 1px">211</span>';
-    h+='<div class="scard"><div class="l"><h4>'+sc.n+' '+tags+'</h4><div class="sub">'+sc.c+' · '+sc.sc[s]+'分 · 招'+(sc.en[s]||0)+'人</div></div><div class="r"><div class="s">'+sc.sc[s]+'</div></div></div>';
+    h+='<div class="scard"><div class="l"><h4>'+sc.n+' '+tags+'</h4><div class="sub">'+sc.c+' · '+sc.sc[s]+'分 · 招'+(sc.enrl[s]||0)+'人</div></div><div class="r"><div class="s">'+sc.sc[s]+'</div></div></div>';
   });
   document.getElementById('listResult').innerHTML=h;
 }
