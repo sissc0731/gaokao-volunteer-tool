@@ -3,7 +3,7 @@
 <div class="tabs"><span class="tab active" onclick="sw('rec')">🎯 智能推荐</span><span class="tab" onclick="sw('list')">🏫 院校查询</span><span class="tab" onclick="sw('cmp')">⚖️ 院校对比</span></div>
 
 <!-- ====== RECOMMEND ====== -->
-<div id="p-rec"><div class="card"><h3>🎯 输入分数，智能推荐</h3><div class="row"><label>科类</label><select id="subj"><option value="wl">物理类</option><option value="ls">历史类</option></select></div><div class="row"><label>分数</label><input type="number" id="score" placeholder="输入分数" onkeyup="if(event.key==='Enter')go()"><span class="unit">分</span></div>
+<div id="p-rec"><div class="card"><h3>🎯 输入分数，智能推荐</h3><div class="row"><label>科类</label><select id="subj"><option value="wl">物理类</option><option value="ls">历史类</option></select></div><div class="row"><label>分数</label><input type="number" id="score" placeholder="输入分数" onkeyup="updateRank();if(event.key==='Enter')go()"><span class="unit">分</span></div><div id="rankEst" class="note" style="color:#2563eb;font-weight:600;text-align:center;margin:4px 0;min-height:18px"></div>
 <div class="tags" id="typeTags"><span class="tag active" data-t="all">全部</span><span class="tag active" data-t="985">985</span><span class="tag active" data-t="211">211</span><span class="tag" data-t="双一流">双一流</span><span class="tag" data-t="公办">公办</span><span class="tag" data-t="民办">民办</span></div>
 <div class="tags" id="cityTags"><span class="tag active" data-t="all">不限城市</span><span class="tag" data-t="福建省">福建</span><span class="tag" data-t="北京">北京</span><span class="tag" data-t="上海">上海</span><span class="tag" data-t="广东">广东</span><span class="tag" data-t="江苏">江苏</span><span class="tag" data-t="浙江">浙江</span></div>
 <button class="btn" onclick="go()">🔍 开始推荐</button></div><div id="result"></div></div>
@@ -51,6 +51,20 @@ function go(){
 // Type/city tag clicks
 document.getElementById('typeTags').addEventListener('click',function(e){if(!e.target.classList.contains('tag'))return;var t=e.target.dataset.t;if(t==='all'){document.querySelectorAll('#typeTags .tag').forEach(function(x){x.classList.toggle('active',x.dataset.t==='all')})}else{var all=document.querySelector('#typeTags .tag[data-t=all]');if(all)all.classList.remove('active');e.target.classList.toggle('active');var actives=document.querySelectorAll('#typeTags .tag.active');if(actives.length===0&&all)all.classList.add('active')}});
 document.getElementById('cityTags').addEventListener('click',function(e){if(!e.target.classList.contains('tag'))return;var t=e.target.dataset.t;if(t==='all'){document.querySelectorAll('#cityTags .tag').forEach(function(x){x.classList.toggle('active',x.dataset.t==='all')})}else{var all=document.querySelector('#cityTags .tag[data-t=all]');if(all)all.classList.remove('active');e.target.classList.toggle('active');var actives=document.querySelectorAll('#cityTags .tag.active');if(actives.length===0&&all)all.classList.add('active')}});
+
+// ====== RANK ESTIMATE (2025福建一分一段表) ======
+var rankTable={wl:{700:100,690:200,680:400,670:700,660:1200,650:2000,640:3100,630:4800,620:6800,610:9300,600:12700,590:16500,580:21000,570:26000,560:32000,550:38000,540:45000,530:52000,520:60000,510:68000,500:78000,490:88000,480:99000,470:110000,460:120000,450:133000,441:141000},ls:{680:20,670:50,660:80,650:150,640:250,630:400,620:600,610:850,600:1200,590:1700,580:2300,570:3000,560:3800,550:4800,540:6000,530:7500,520:9000,510:10800,500:12800,490:15000,480:17500,470:20000,460:22800,450:25562}};
+function updateRank(){
+  var sc=parseInt(document.getElementById('score').value)||0,sj=document.getElementById('subj').value;
+  if(!sc||sc<441&&sj==='wl'||sc<450&&sj==='ls'){document.getElementById('rankEst').innerHTML='';return}
+  var tbl=rankTable[sj];var keys=Object.keys(tbl).map(Number).sort(function(a,b){return b-a});
+  var lo=keys[keys.length-1],hi=keys[0];
+  for(var i=0;i<keys.length;i++){if(sc<=keys[i]){hi=keys[i];lo=keys[i+1]||keys[keys.length-1];break}}
+  var est=Math.round(tbl[hi]+(tbl[lo]-tbl[hi])*(hi-sc)/(hi-lo));
+  var estStr=est>10000?(est/10000).toFixed(1)+'万':est.toLocaleString();
+  var above=sj==='wl'?141000-est:25562-est;
+  document.getElementById('rankEst').innerHTML='📊 估计全省第 <b>'+estStr+'</b> 名（超过约<b>'+Math.round(above/(sj==='wl'?141000:25562)*100)+'%</b>考生）';
+}
 
 // ====== SCHOOL LIST ======
 function ls(){
