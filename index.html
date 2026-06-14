@@ -51,7 +51,19 @@ function doRec(){
       if(s.i9)tags+='<span style="background:#fef3c7;color:#92400e;font-size:.55rem;padding:1px 3px;border-radius:3px;margin:0 1px">985</span>';
       if(s.i2)tags+='<span style="background:#dbeafe;color:#1e40af;font-size:.55rem;padding:1px 3px;border-radius:3px;margin:0 1px">211</span>';
       if(s.sy)tags+='<span style="background:#d1fae5;color:#065f46;font-size:.55rem;padding:1px 3px;border-radius:3px;margin:0 1px">双一流</span>';
-      h+='<div class="scard '+s.level+'"><div class="l"><h4>'+s.n+' '+tags+'</h4><div class="sub">'+s.c+' · ~'+s.sc+'分'+(s.en>0?' · 招'+s.en+'人':'')+'</div></div><div class="r"><div class="s">'+(s.diff>=0?'+':'')+s.diff+'</div><div class="p p'+s.level+'">'+s.prob+'%</div></div></div>';
+      var estRank=Math.round(Math.exp((720-s.sc)/80)*10000);
+      var rankStr=estRank>10000?(estRank/10000).toFixed(1)+'万':estRank.toLocaleString();
+      var sm=[];
+      if(s.t==='理工')sm=['计算机','电子信息','机械','自动化','土木'];
+      else if(s.t==='综合')sm=['计算机','法学','经济','工商管理','数学'];
+      else if(s.t==='师范')sm=['教育学','汉语言','数学','英语','物理'];
+      else if(s.t==='医药')sm=['临床医学','口腔','药学','护理','预防医学'];
+      else if(s.t==='财经')sm=['金融学','会计','经济','工商管理','统计'];
+      else if(s.t==='农林')sm=['农学','园艺','动物医学','食品科学','生物'];
+      else if(s.t==='语言')sm=['英语','翻译','商务英语','日语','新闻'];
+      else if(s.t==='政法')sm=['法学','侦查学','治安学','政治学','社会学'];
+      else sm=['计算机','英语','工商管理','会计','法学'];
+      h+='<div class="scard '+s.level+'"><div class="l"><h4>'+s.n+' '+tags+'</h4><div class="sub">'+s.c+' · '+s.t+'类 · ~'+s.sc+'分 · 位次约<b>'+rankStr+'</b>'+(s.en>0?' · 招<b>'+s.en+'</b>人':'')+'<br>🏷 优势方向：'+sm.join('、')+'</div></div><div class="r"><div class="s">'+(s.diff>=0?'+':'')+s.diff+'</div><div class="p p'+s.level+'">'+s.prob+'%</div></div></div>';
     });
   }
   render(cw,'🔴 冲刺院校');
