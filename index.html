@@ -28,12 +28,12 @@ function go(){
   // Get active type/city filters
   var aType=[],aCity=[];document.querySelectorAll('#typeTags .tag.active').forEach(function(t){if(t.dataset.t!=='all')aType.push(t.dataset.t)});document.querySelectorAll('#cityTags .tag.active').forEach(function(t){if(t.dataset.t!=='all')aCity.push(t.dataset.t)});
   var R=D.map(function(s){
-    var ss=s.sc[sj];if(!ss||sc-ss<-60)return null;var d=sc-ss,p,l;
+    var ss=s.sc[sj];if(!ss||sc-ss<-25||sc-ss>40)return null;var d=sc-ss,p,l;
     // Type filter
     if(aType.length>0){var ok=false;aType.forEach(function(tt){if(tt==='985'&&s.i9)ok=true;if(tt==='211'&&s.i2)ok=true;if(tt==='双一流'&&s.sy)ok=true;if(tt==='公办'&&(s.i9||s.i2||s.sy||(s.sc.wl>460&&!s.n.includes('职业'))))ok=true;if(tt==='民办'&&!s.i9&&!s.i2&&!s.sy&&(s.n.includes('学院')||s.n.includes('职业')))ok=true});if(!ok)return null}
     // City filter
     if(aCity.length>0&&aCity.indexOf(s.p)<0)return null;
-    if(d<-40){p=Math.round(1+Math.random()*3);l='cw'}else if(d<-20){p=Math.round(3+Math.random()*8);l='cw'}else if(d<-5){p=Math.round(8+Math.random()*15);l='cw'}else if(d<0){p=Math.round(20+Math.random()*25);l='cw'}else if(d<5){p=Math.round(45+Math.random()*15);l='wd'}else if(d<15){p=Math.round(60+Math.random()*20);l='wd'}else if(d<30){p=Math.round(80+Math.random()*15);l='bd'}else{p=Math.round(92+Math.random()*7);l='bd'}
+    if(d<-15){p=Math.round(1+Math.random()*8);l='cw'}else if(d<-8){p=Math.round(8+Math.random()*15);l='cw'}else if(d<-3){p=Math.round(20+Math.random()*18);l='cw'}else if(d<=0){p=Math.round(35+Math.random()*14);l='cw'}else if(d<=5){p=Math.round(50+Math.random()*15);l='wd'}else if(d<=12){p=Math.round(65+Math.random()*17);l='wd'}else if(d<=25){p=Math.round(80+Math.random()*15);l='bd'}else{p=Math.round(90+Math.random()*9);l='bd'}
     var rk=Math.round(Math.exp((720-ss)/80)*10000);var rs=rk>10000?(rk/10000).toFixed(1)+'万':rk.toLocaleString();
     return{n:s.n,c:s.c,sc:ss,diff:d,prob:p,level:l,rank:rs,i9:s.i9,i2:s.i2,sy:s.sy,en:s.en[sj]||0,p:s.p};
   }).filter(function(x){return x});
