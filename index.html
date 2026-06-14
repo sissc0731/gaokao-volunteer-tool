@@ -16,20 +16,20 @@ function setMode(m){mode=m;document.querySelectorAll('.mode-btn').forEach(functi
 
 // 优志愿同款录取概率模型
 // 关键：只有分数差距在合理范围内才显示。差太多根本不该出现
-function analyze(sc,schoolScore,enrl){
-  var diff=sc-schoolScore; // 正数=你的分高于学校线
+function analyze(sc,s){
+  var schoolScore=s.sc[document.getElementById('subj').value];if(!schoolScore)return null;
+  var diff=sc-schoolScore,enrl=s.enrl[document.getElementById('subj').value]||0;
   var prob,level;
-  // 只显示分差在 -60 到 +30 之间的学校。差太多（如450vs594）根本不显示
-  if(diff<-60)return null; // 差60分以上，完全没有可能
-  if(diff<-40){prob=Math.round(1+Math.random()*3);level='cw';} // 差40-60分:极低概率冲刺
-  else if(diff<-20){prob=Math.round(3+Math.random()*8);level='cw';} // 差20-40分:低概率冲刺
-  else if(diff<-5){prob=Math.round(8+Math.random()*15);level='cw';} // 差5-20分:可冲刺
-  else if(diff<0){prob=Math.round(20+Math.random()*25);level='cw';} // 差0-5分:边缘冲刺
-  else if(diff<5){prob=Math.round(45+Math.random()*15);level='wd';} // 0-5分:稳妥
-  else if(diff<15){prob=Math.round(60+Math.random()*20);level='wd';} // 5-15分:稳妥
-  else if(diff<30){prob=Math.round(80+Math.random()*15);level='bd';} // 15-30分:保底
-  else{prob=Math.round(92+Math.random()*7);level='bd';} // 30分以上:绝对保底
-  return{n:s.n,c:s.c,t:s.t,sc:schoolScore,diff:diff,prob:prob,level:level,i985:s.i985,i211:s.i211,syl:s.syl,enrl:enrl||0};
+  if(diff<-60)return null;
+  if(diff<-40){prob=Math.round(1+Math.random()*3);level='cw';}
+  else if(diff<-20){prob=Math.round(3+Math.random()*8);level='cw';}
+  else if(diff<-5){prob=Math.round(8+Math.random()*15);level='cw';}
+  else if(diff<0){prob=Math.round(20+Math.random()*25);level='cw';}
+  else if(diff<5){prob=Math.round(45+Math.random()*15);level='wd';}
+  else if(diff<15){prob=Math.round(60+Math.random()*20);level='wd';}
+  else if(diff<30){prob=Math.round(80+Math.random()*15);level='bd';}
+  else{prob=Math.round(92+Math.random()*7);level='bd';}
+  return{n:s.n,c:s.c,t:s.t,sc:schoolScore,diff:diff,prob:prob,level:level,i985:s.i985,i211:s.i211,syl:s.syl,enrl:enrl};
 }
 function probLabel(p,l){if(l==='bd')return['prob-bd','保底 80-99%'];if(l==='wd')return['prob-wd','稳妥 50-79%'];return['prob-cw','冲刺 1-49%']}
 
@@ -37,7 +37,7 @@ function recommend(){
   if(!dataLoaded){alert('院校数据加载中，请稍后再试');return}
   var sc=parseInt(document.getElementById('sc').value)||0,subj=document.getElementById('subj').value;
   if(!sc){alert('请输入分数');return}
-  var list=schools.map(function(s){var val=s.sc[subj];if(val<=0)return null;return analyze(sc,val,s.enrl[subj])}).filter(function(x){return x});
+  var list=schools.map(function(s){return analyze(sc,s)}).filter(function(x){return x});
   list.sort(function(a,b){return b.sc-a.sc});
   var cw=list.filter(function(s){return s.level==='cw'}),wd=list.filter(function(s){return s.level==='wd'}),bd=list.filter(function(s){return s.level==='bd'});
   var html='<div class="summary"><div class="box box-cw"><div class="num">'+cw.length+'</div><div class="lbl">冲刺 1-49%</div></div><div class="box box-wd"><div class="num">'+wd.length+'</div><div class="lbl">稳妥 50-79%</div></div><div class="box box-bd"><div class="num">'+bd.length+'</div><div class="lbl">保底 80-99%</div></div></div>';
@@ -52,7 +52,7 @@ function listSchools(){var s=document.getElementById('sSubj').value,q=(document.
 document.getElementById('schoolFilters').addEventListener('click',function(e){if(!e.target.classList.contains('filter'))return;e.target.classList.toggle('active');listSchools()});
 
 function fillChkSchools(){var sel=document.getElementById('chkSchool');sel.innerHTML='<option value="">--选择院校--</option>';schools.forEach(function(s){sel.innerHTML+='<option value="'+s.n+'">'+s.n+'</option>'})}
-function checkProb(){if(!dataLoaded){alert('数据加载中，请稍后');return}var n=document.getElementById('chkSchool').value,subj=document.getElementById('chkSubj').value,sc=parseInt(document.getElementById('chkSc').value)||0;if(!n||!sc){alert('请选择院校并输入分数');return}var s=schMap[n];var sc2=s.sc[subj],diff=sc-sc2,prob=calcProb(sc,sc2,s.enrl[subj]);var pl=probLabel(prob);var h='<div style="padding:16px;text-align:center"><div style="font-size:3rem;font-weight:900;color:'+(prob>=80?'#10b981':prob>=50?'#2563eb':'#f59e0b')+'">'+prob+'%</div><div style="font-size:.85rem;color:#666">录取概率</div></div>';h+='<div class="summary"><div class="box" style="background:#f3f4f6;color:#1a1a2e"><div class="num">'+sc+'</div><div class="lbl">你的分数</div></div><div class="box" style="background:#f3f4f6;color:#1a1a2e"><div class="num">'+sc2+'</div><div class="lbl">院校最低分</div></div><div class="box" style="background:#f3f4f6;color:#1a1a2e"><div class="num">'+(diff>=0?'+':'')+diff+'</div><div class="lbl">分差</div></div></div>';h+='<div class="th"><b>'+n+'</b> · '+s.c+' · '+s.t+'类<br>2025年福建最低投档线：<b>'+sc2+'分</b> · 招生'+s.enrl[subj]+'人<br>你的分数'+sc+'分，'+pl[1]+'</div>';document.getElementById('chkResult').innerHTML=h;document.getElementById('chkResult').className='result show'}
+function checkProb(){if(!dataLoaded){alert('数据加载中，请稍后');return}var n=document.getElementById('chkSchool').value,subj=document.getElementById('chkSubj').value,sc=parseInt(document.getElementById('chkSc').value)||0;if(!n||!sc){alert('请选择院校并输入分数');return}var s=schMap[n];var r=analyze(sc,s);if(!r){alert('分数差距过大，无法测算');return}var pl=probLabel(r.prob,r.level);var h='<div style="padding:16px;text-align:center"><div style="font-size:3rem;font-weight:900;color:'+(r.level==='bd'?'#10b981':r.level==='wd'?'#2563eb':'#f59e0b')+'">'+r.prob+'%</div><div style="font-size:.85rem;color:#666">录取概率</div></div>';h+='<div class="summary"><div class="box" style="background:#f3f4f6;color:#1a1a2e"><div class="num">'+sc+'</div><div class="lbl">你的分数</div></div><div class="box" style="background:#f3f4f6;color:#1a1a2e"><div class="num">'+r.sc+'</div><div class="lbl">院校最低分</div></div><div class="box" style="background:#f3f4f6;color:#1a1a2e"><div class="num">'+(r.diff>=0?'+':'')+r.diff+'</div><div class="lbl">分差</div></div></div>';h+='<div class="th"><b>'+n+'</b> · '+s.c+' · '+s.t+'类<br>2025年福建最低投档线：<b>'+r.sc+'分</b> · 招生'+r.enrl+'人<br>你的分数'+sc+'分，'+pl[1]+'</div>';document.getElementById('chkResult').innerHTML=h;document.getElementById('chkResult').className='result show'}
 
 // Holland test (compact)
 var hQs=[{q:'喜欢动手组装或修理东西',d:'R'},{q:'喜欢户外工作或活动',d:'R'},{q:'对操作机械和工具有兴趣',d:'R'},{q:'喜欢做具体看得见成果的事',d:'R'},{q:'对运动或体能活动有兴趣',d:'R'},{q:'喜欢解决复杂的数学或科学问题',d:'I'},{q:'喜欢独自思考和研究问题',d:'I'},{q:'对探索新知识和理论有兴趣',d:'I'},{q:'喜欢做实验和分析数据',d:'I'},{q:'喜欢阅读科普书籍或文章',d:'I'},{q:'喜欢绘画写作音乐等艺术创作',d:'A'},{q:'经常有新的创意和想法',d:'A'},{q:'喜欢不受约束地做事情',d:'A'},{q:'对美感色彩和形式比较敏感',d:'A'},{q:'喜欢用不同方式表达自己的想法',d:'A'},{q:'喜欢帮助别人解决问题',d:'S'},{q:'善于倾听和理解他人的感受',d:'S'},{q:'喜欢参与团队合作和集体活动',d:'S'},{q:'对教育和培训工作有兴趣',d:'S'},{q:'比较关注社会问题和公益事业',d:'S'},{q:'喜欢在人群中成为主导者',d:'E'},{q:'善于说服别人接受我的观点',d:'E'},{q:'喜欢竞争和挑战',d:'E'},{q:'对商业和赚钱有兴趣',d:'E'},{q:'乐于承担风险和做决策',d:'E'},{q:'喜欢按照规则和流程做事',d:'C'},{q:'注重细节和准确性',d:'C'},{q:'喜欢整理文件和数据',d:'C'},{q:'做事有计划并按部就班',d:'C'},{q:'在工作中追求秩序和稳定',d:'C'}];
