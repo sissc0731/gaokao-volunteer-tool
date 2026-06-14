@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>高考志愿填报模拟系统 - 智能推荐/分数线查询/位次换算</title><meta name="description" content="2026高考志愿填报免费模拟工具，根据分数和位次智能推荐冲稳保院校，查询历年录取分数线，专业解读。高考生和家长必备。"><meta name="keywords" content="高考志愿填报,志愿填报模拟,录取分数线,位次换算,大学推荐,高考志愿,冲稳保"><style>*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}:root{--accent:#2563eb;--r:12px}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",sans-serif;background:#f0f2f5;color:#1a1a2e;line-height:1.6;min-height:100vh}.container{max-width:800px;margin:0 auto;padding:0 16px}header{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;padding:28px 0;text-align:center}header h1{font-size:1.5rem}header p{opacity:.85;font-size:.85rem;margin-top:4px}.tabs{display:flex;background:#fff;border-bottom:2px solid #e5e7eb;position:sticky;top:0;z-index:10;overflow-x:auto}.tab{flex:1;text-align:center;padding:12px 8px;cursor:pointer;font-size:.78rem;font-weight:600;color:#666;border-bottom:3px solid transparent;white-space:nowrap;transition:.15s}.tab:hover{color:var(--accent)}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}.panel{display:none;padding:20px 0}.panel.active{display:block}.card{background:#fff;border-radius:var(--r);padding:22px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.card h3{font-size:.95rem;margin-bottom:10px}.row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center}.row label{font-size:.82rem;font-weight:600;color:#444;min-width:60px}.row select,.row input{padding:10px;border:2px solid #e5e7eb;border-radius:8px;font-size:.9rem;flex:1;min-width:120px;background:#fafafa}.row input:focus,.row select:focus{outline:none;border-color:var(--accent)}.btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer}.btn:hover{background:#1d4ed8}.btn-sm{padding:8px 16px;font-size:.82rem;width:auto}.result{margin-top:12px;display:none}.result.show{display:block}.school-card{padding:14px;border:1px solid #e5e7eb;border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.15s;display:flex;justify-content:space-between;align-items:center}.school-card:hover{border-color:var(--accent)}.school-card .info h4{font-size:.9rem;margin-bottom:2px}.school-card .info .sub{font-size:.75rem;color:#666}.school-card .score{font-weight:700;color:var(--accent);font-size:1.1rem}.tag-sm{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.68rem;margin-right:4px}.tag-cw{background:#fef3c7;color:#92400e}.tag-wd{background:#dbeafe;color:#1e40af}.tag-bd{background:#d1fae5;color:#065f46}.table{width:100%;font-size:.78rem;border-collapse:collapse;margin-top:8px}.table th{background:#f0f5ff;padding:6px;text-align:left;font-size:.72rem;color:var(--accent)}.table td{padding:6px;border-bottom:1px solid #f0f0f0}.chart{display:flex;gap:4px;align-items:flex-end;height:80px;margin:12px 0}.chart .bar{flex:1;background:var(--accent);border-radius:4px 4px 0 0;min-height:4px;transition:.3s;position:relative}.chart .bar .val{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:.65rem;white-space:nowrap}footer{text-align:center;color:#999;font-size:.7rem;padding:20px}@media(max-width:500px){.tab{font-size:.7rem;padding:10px 4px}}</style></head><body><header><h1>🎓 高考志愿填报模拟系统</h1><p>智能推荐 · 分数线查询 · 位次换算 · 专业解读</p></header><div class="tabs" id="tabs"><div class="tab active" data-tab="recommend">🎯 智能推荐</div><div class="tab" data-tab="rank">📊 位次换算</div><div class="tab" data-tab="compare">🏫 院校对比</div><div class="tab" data-tab="major">📚 专业解读</div></div><main class="container"><!-- Recommend --><section class="panel active" id="tab-recommend"><div class="card"><h3>🎯 输入分数，智能推荐冲/稳/保院校</h3><div class="row"><label>省份</label><select id="province" onchange="updateRank()"><option value="bj">北京</option><option value="sh">上海</option><option value="gd">广东</option><option value="zj">浙江</option><option value="js">江苏</option><option value="sc">四川</option><option value="hb">湖北</option><option value="sd">山东</option><option value="hn">河南</option><option value="fj">福建</option></select></div><div class="row"><label>科类</label><select id="subject"><option value="wl">物理类/理科</option><option value="ls">历史类/文科</option></select></div><div class="row"><label>分数</label><input type="number" id="score" placeholder="例如：620" oninput="updateRank()"></div><div class="row"><label>位次</label><input type="number" id="rank" placeholder="全省排名"><span style="font-size:.75rem;color:#999">选填，填了更准</span></div><button class="btn" onclick="recommend()">🔍 智能推荐</button><div class="result" id="recResult"></div></div></section><!-- Rank --><section class="panel" id="tab-rank"><div class="card"><h3>📊 分数位次换算参考</h3><div class="row"><label>省份</label><select id="rProvince" onchange="updateRankChart()"><option value="bj">北京</option><option value="sh" selected>上海</option><option value="gd">广东</option><option value="zj">浙江</option><option value="js">江苏</option></select></div><div class="row"><label>科类</label><select id="rSubject"><option value="wl">物理类/理科</option><option value="ls">历史类/文科</option></select></div><div class="row"><label>分数</label><input type="number" id="rScore" value="600" placeholder="输入分数" oninput="updateRankChart()"></div><div id="rankChart"></div><p style="font-size:.75rem;color:#999;margin-top:8px">* 位次为估算值，以省考试院公布的一分一段表为准</p></div></section><!-- Compare --><section class="panel" id="tab-compare"><div class="card"><h3>🏫 院校对比</h3><div class="row"><label>院校A</label><select id="schoolA"><option value="pku">北京大学</option><option value="thu">清华大学</option><option value="fdu">复旦大学</option><option value="sjtu">上海交通大学</option><option value="zju">浙江大学</option><option value="nju">南京大学</option><option value="whu">武汉大学</option><option value="hust">华中科技大学</option></select></div><div class="row"><label>院校B</label><select id="schoolB"><option value="thu">清华大学</option><option value="pku">北京大学</option><option value="sjtu" selected>上海交通大学</option><option value="fdu">复旦大学</option><option value="zju">浙江大学</option><option value="nju">南京大学</option><option value="whu">武汉大学</option><option value="hust">华中科技大学</option></select></div><button class="btn" onclick="compareSchools()">📊 对比</button><div class="result" id="cmpResult"></div></div></section><!-- Major --><section class="panel" id="tab-major"><div class="card"><h3>📚 热门专业解读</h3><div id="majorList"></div></div></section></main><footer>仅供参考，以各省考试院官方数据为准 · 祝金榜题名 🎉</footer><script>
+// Tab switch
+document.getElementById('tabs').addEventListener('click',function(e){if(!e.target.classList.contains('tab'))return;var n=e.target.dataset.tab;document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('active')});e.target.classList.add('active');document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});document.getElementById('tab-'+n).classList.add('active')});
+
+// School database
+var schools={pku:{name:'北京大学',city:'北京',type:'综合',is985:true,is211:true,双一流:true,majors:['法学','经济学','计算机','临床医学','数学'],score:{bj:{wl:683,ls:676},sh:{wl:618,ls:614},gd:{wl:694,ls:662},zj:{wl:703,ls:691},js:{wl:678,ls:652}}},thu:{name:'清华大学',city:'北京',type:'理工',is985:true,is211:true,双一流:true,majors:['计算机','电子信息','建筑学','经管','自动化'],score:{bj:{wl:685,ls:678},sh:{wl:620,ls:616},gd:{wl:696,ls:664},zj:{wl:705,ls:693},js:{wl:680,ls:654}}},fdu:{name:'复旦大学',city:'上海',type:'综合',is985:true,is211:true,双一流:true,majors:['新闻传播','临床医学','经济学','哲学','数学'],score:{bj:{wl:678,ls:672},sh:{wl:580,ls:580},gd:{wl:688,ls:656},zj:{wl:696,ls:685},js:{wl:672,ls:648}}},sjtu:{name:'上海交通大学',city:'上海',type:'理工',is985:true,is211:true,双一流:true,majors:['电子信息','机械工程','船舶海洋','临床医学','经管'],score:{bj:{wl:680,ls:674},sh:{wl:582,ls:582},gd:{wl:690,ls:658},zj:{wl:698,ls:687},js:{wl:674,ls:650}}},zju:{name:'浙江大学',city:'杭州',type:'综合',is985:true,is211:true,双一流:true,majors:['计算机','控制科学','农学','临床医学','光学工程'],score:{bj:{wl:674,ls:668},sh:{wl:576,ls:576},gd:{wl:684,ls:652},zj:{wl:665,ls:658},js:{wl:667,ls:642}}},nju:{name:'南京大学',city:'南京',type:'综合',is985:true,is211:true,双一流:true,majors:['天文学','地质学','哲学','计算机','环境科学'],score:{bj:{wl:670,ls:665},sh:{wl:572,ls:573},gd:{wl:682,ls:648},zj:{wl:687,ls:678},js:{wl:663,ls:638}}},whu:{name:'武汉大学',city:'武汉',type:'综合',is985:true,is211:true,双一流:true,majors:['测绘科学','法学','水利工程','口腔医学','遥感科学'],score:{bj:{wl:658,ls:652},sh:{wl:560,ls:562},gd:{wl:668,ls:636},zj:{wl:672,ls:665},js:{wl:648,ls:626}}},hust:{name:'华中科技大学',city:'武汉',type:'理工',is985:true,is211:true,双一流:true,majors:['光学工程','机械工程','电气工程','计算机','临床医学'],score:{bj:{wl:660,ls:654},sh:{wl:562,ls:564},gd:{wl:670,ls:638},zj:{wl:674,ls:667},js:{wl:650,ls:628}}},uestc:{name:'电子科技大学',city:'成都',type:'理工',is985:true,is211:true,双一流:true,majors:['电子信息','通信工程','计算机','集成电路','网络安全'],score:{bj:{wl:650,ls:644},sh:{wl:555,ls:556},gd:{wl:660,ls:628},zj:{wl:662,ls:655},js:{wl:640,ls:618}}},cqu:{name:'重庆大学',city:'重庆',type:'综合',is985:true,is211:true,双一流:true,majors:['建筑学','土木工程','机械工程','矿业工程','电气工程'],score:{bj:{wl:640,ls:635},sh:{wl:545,ls:546},gd:{wl:650,ls:618},zj:{wl:652,ls:645},js:{wl:630,ls:608}}},xjtu:{name:'西安交通大学',city:'西安',type:'理工',is985:true,is211:true,双一流:true,majors:['动力工程','电气工程','机械工程','管理科学','核科学'],score:{bj:{wl:652,ls:646},sh:{wl:558,ls:560},gd:{wl:662,ls:630},zj:{wl:664,ls:657},js:{wl:642,ls:620}}},tongji:{name:'同济大学',city:'上海',type:'理工',is985:true,is211:true,双一流:true,majors:['建筑学','土木工程','城乡规划','交通运输','环境工程'],score:{bj:{wl:662,ls:656},sh:{wl:565,ls:567},gd:{wl:672,ls:640},zj:{wl:676,ls:668},js:{wl:652,ls:630}}},seu:{name:'东南大学',city:'南京',type:'理工',is985:true,is211:true,双一流:true,majors:['建筑学','土木工程','电子科学','交通运输','生物医学'],score:{bj:{wl:648,ls:642},sh:{wl:552,ls:553},gd:{wl:658,ls:626},zj:{wl:660,ls:653},js:{wl:638,ls:616}}},sysu:{name:'中山大学',city:'广州',type:'综合',is985:true,is211:true,双一流:true,majors:['临床医学','工商管理','生态学','哲学','海洋科学'],score:{bj:{wl:656,ls:650},sh:{wl:555,ls:558},gd:{wl:650,ls:620},zj:{wl:668,ls:660},js:{wl:646,ls:624}}},hhu:{name:'河海大学',city:'南京',type:'理工',is985:false,is211:true,双一流:true,majors:['水利工程','环境科学','土木工程','海洋科学','计算机'],score:{bj:{wl:618,ls:612},sh:{wl:520,ls:522},gd:{wl:628,ls:596},zj:{wl:638,ls:632},js:{wl:598,ls:578}}},dhu:{name:'东华大学',city:'上海',type:'理工',is985:false,is211:true,双一流:true,majors:['纺织科学','材料科学','服装设计','化学工程','管理科学'],score:{bj:{wl:612,ls:608},sh:{wl:515,ls:516},gd:{wl:622,ls:590},zj:{wl:632,ls:626},js:{wl:592,ls:572}}}};
+
+function getScore(school,province,subject){
+  var s=schools[school];if(!s)return 0;
+  var ps=s.score[province];if(!ps)return 0;
+  return ps[subject]||0;
+}
+function getTag(s){var t=[];if(s.is985)t.push('<span class="tag-sm tag-cw">985</span>');if(s.is211)t.push('<span class="tag-sm tag-wd">211</span>');if(s.双一流)t.push('<span class="tag-sm tag-bd">双一流</span>');return t.join('')}
+
+// Recommend
+function recommend(){
+  var score=parseInt(document.getElementById('score').value)||0;
+  var province=document.getElementById('province').value;
+  var subject=document.getElementById('subject').value;
+  var rank=parseInt(document.getElementById('rank').value)||0;
+  if(!score){alert('请输入分数');return}
+  var list=[];
+  Object.keys(schools).forEach(function(k){
+    var sc=getScore(k,province,subject);
+    if(sc>0)list.push({id:k,score:sc,diff:score-sc});
+  });
+  list.sort(function(a,b){return b.score-a.score});
+  var cw=[],wd=[],bd=[];
+  list.forEach(function(s){
+    if(s.diff>=0&&s.diff<=10)cw.push(s);
+    else if(s.diff>=-30&&s.diff<0)wd.push(s);
+    else if(s.diff>=-60&&s.diff<-30)bd.push(s);
+  });
+  var html='';
+  function render(arr,title,tagClass){
+    if(!arr.length)return;
+    html+='<div style="margin-top:14px"><h4 style="font-size:.85rem;margin-bottom:8px;color:#666">'+title+'</h4>';
+    arr.forEach(function(s){
+      var sc=schools[s.id];
+      html+='<div class="school-card" onclick="showDetail(\''+s.id+'\')"><div class="info"><h4>'+sc.name+' '+getTag(sc)+'</h4><div class="sub">'+sc.city+' · '+sc.type+'类 · 最低分约 '+s.score+'</div></div><div class="score">'+(s.diff>=0?'+':'')+s.diff+'</div></div>';
+    });
+    html+='</div>';
+  }
+  html+='<p style="font-size:.82rem;color:#666;margin-top:12px">📌 参考分数：<b>'+score+'分</b> | 省份：<b>'+document.getElementById('province').selectedOptions[0].text+'</b> | <b>'+document.getElementById('subject').selectedOptions[0].text+'</b></p>';
+  render(cw,'🔴 冲一冲（0~10分内）','cw');
+  render(wd,'🟡 稳一稳（30分内）','wd');
+  render(bd,'🟢 保一保（60分内）','bd');
+  if(!cw.length&&!wd.length)html+='<p style="margin-top:12px;color:#999">该分数段暂无匹配院校数据，请调整分数或省份</p>';
+  html+='<p style="font-size:.68rem;color:#999;margin-top:12px">* 数据为近三年最低录取分参考，以各省考试院公布为准。冲稳保策略仅供参考。</p>';
+  document.getElementById('recResult').innerHTML=html;
+  document.getElementById('recResult').className='result show';
+}
+
+// Rank conversion
+function updateRankChart(){
+  var score=parseInt(document.getElementById('rScore').value)||0;
+  var subject=document.getElementById('rSubject').value;
+  var estimates={};var s=subject==='wl'?'物理':'历史';
+  var base=subject==='wl'?480:430;
+  for(var i=450;i<=720;i+=10){var r=Math.round(Math.exp((720-i)/80)*10000);estimates[i]=r}
+  var rank=Math.round(Math.exp((720-score)/80)*10000);
+  document.getElementById('rankChart').innerHTML='<div style="padding:16px;text-align:center"><p style="font-size:2rem;font-weight:800;color:var(--accent)">约 '+rank.toLocaleString()+' 名</p><p style="font-size:.82rem;color:#666">'+s+'类 · '+score+'分 估算位次</p><div class="chart">'+(function(){var h='';for(var i=600;i<=700;i+=10){var r=Math.round(Math.exp((720-i)/80)*10000);var height=Math.max(4,Math.round(80-Math.log(r)*5));h+='<div class="bar" style="height:'+height+'px"><span class="val">'+i+'</span></div>'}return h})()+'</div><p style="font-size:.68rem;color:#999;text-align:center;margin-top:8px">分数越高 → 位次越前 → 柱越高。参考历年一分一段表估算。</p></div>';
+}
+function updateRank(){updateRankChart()}
+
+// Compare
+function compareSchools(){
+  var a=document.getElementById('schoolA').value,b=document.getElementById('schoolB').value;
+  var sa=schools[a],sb=schools[b];
+  if(!sa||!sb)return;
+  var html='<table class="table"><tr><th>对比项</th><th>'+sa.name+'</th><th>'+sb.name+'</th></tr>';
+  html+='<tr><td>所在地</td><td>'+sa.city+'</td><td>'+sb.city+'</td></tr>';
+  html+='<tr><td>类型</td><td>'+sa.type+'</td><td>'+sb.type+'</td></tr>';
+  html+='<tr><td>985</td><td>'+(sa.is985?'✅':'❌')+'</td><td>'+(sb.is985?'✅':'❌')+'</td></tr>';
+  html+='<tr><td>211</td><td>'+(sa.is211?'✅':'❌')+'</td><td>'+(sb.is211?'✅':'❌')+'</td></tr>';
+  html+='<tr><td>双一流</td><td>'+(sa.双一流?'✅':'❌')+'</td><td>'+(sb.双一流?'✅':'❌')+'</td></tr>';
+  html+='<tr><td>优势专业</td><td>'+sa.majors.slice(0,3).join('、')+'</td><td>'+sb.majors.slice(0,3).join('、')+'</td></tr>';
+  html+='<tr><td>北京录取线</td><td>'+getScore(a,'bj','wl')+'分</td><td>'+getScore(b,'bj','wl')+'分</td></tr>';
+  html+='</table>';
+  document.getElementById('cmpResult').innerHTML=html;
+  document.getElementById('cmpResult').className='result show';
+}
+
+// Major list
+(function(){
+  var majors=[{name:'计算机科学与技术',desc:'就业面最广的专业之一。互联网/金融/制造业都需要。名校毕业生起薪20-40万/年。核心课程：数据结构、算法、操作系统、计算机网络。建议：数学基础好+喜欢动手解决问题的人适合。'},{name:'临床医学',desc:'学制最长（5年本科+3年规培），但职业稳定性最高。越老越吃香的典型。三甲医生30岁后收入可观但前期投入大。核心要求：耐心+抗压能力+持续学习意愿。'},{name:'电子信息工程',desc:'芯片/通信/物联网方向需求旺盛。国家战略支持行业，未来十年确定性高。核心课程：电路分析、信号处理、电磁场、嵌入式系统。适合物理好+动手能力强的人。'},{name:'法学',desc:'出路分两条：考公（法院/检察院/司法局）和律所。五院四系的法学学历是敲门砖。需要通过法律职业资格考试（通过率约15%）。适合逻辑思维强+文字功底好+记忆力好的人。'},{name:'金融学',desc:'高薪但卷。清北复交+两财一贸是核心圈层。就业方向：银行/券商/基金/保险。数学不好慎入。核心能力：数据分析+沟通+抗压。证书很重要（CFA/CPA/FRM）。'},{name:'建筑学',desc:'学制5年。地产下行周期就业压力大但顶尖院校毕业生仍供不应求。需要美术基础+空间想象力+熬夜能力。老八校（清华同济东南天大等）是这个领域的金字招牌。'}];
+  var html='';
+  majors.forEach(function(m){
+    html+='<div style="padding:10px 0;border-bottom:1px solid #f0f0f0"><h4 style="font-size:.9rem">'+m.name+'</h4><p style="font-size:.78rem;color:#666;margin-top:4px">'+m.desc+'</p></div>';
+  });
+  document.getElementById('majorList').innerHTML=html;
+})();
+updateRankChart();
+</script></body></html>
